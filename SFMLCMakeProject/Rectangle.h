@@ -6,15 +6,14 @@
 class Rectangle : public BaseShape
 {
 public:
-	explicit Rectangle(sf::Vector2f point1, sf::Vector2f point2);
-	virtual std::size_t getPointCount() const;
-	virtual sf::Vector2f getPoint(std::size_t index) const;
+	Rectangle(sf::Vector2f point1, sf::Vector2f point2);
 
-	float GetSize()const;
-	float GetArea() const override;
-	float GetPerimeter() const override;
+	sf::Vector2f GetSize() const;
 
+	void draw(sf::RenderWindow& window) const override;
 	void setFillColor(const sf::Color& color);
 private:
-	sf::Vector2f points[4];
+
+	std::vector<sf::Vector2f> points;
+	sf::RectangleShape shape;
 };

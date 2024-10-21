@@ -1,12 +1,20 @@
 #pragma once
 #include "BaseShape.h"
 
-class Decorator :public BaseShape {
+class Decorator :public BaseShape 
+{
 protected:
-	BaseShape* shape;
+	std::shared_ptr<BaseShape> shape;
+	virtual void ComputeArea() = 0;
+	virtual void ComputePerimeter() = 0;
+	void SetPerimeter(float value);
+	void SetArea(float value);
 public:
-	explicit Decorator(BaseShape* shape) 
-		:shape(shape)
-	{}
-	virtual ~Decorator() { delete shape;  }
+	Decorator(std::shared_ptr<BaseShape> shape);
+	void draw(sf::RenderWindow& window) const override;
+	float GetArea() const;
+	float GetPerimeter() const;
+private:
+	float perimeter = 0.0;
+	float area = 0.0;
 };

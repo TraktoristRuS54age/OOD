@@ -7,15 +7,12 @@
 #include "ShapeLoader.h"
 #include "ShapeWriter.h"
 
-
-//можно юзать адаптер вместо декоратора
 int main()
 {
     ShapeLoader loader("input.txt");
     auto shapes = loader.loadShapes();
 
     sf::RenderWindow window(sf::VideoMode(1000, 600), "Poject by Daniil Cherepov");
-
     while (window.isOpen())
     {
         sf::Event event;
@@ -25,9 +22,9 @@ int main()
                 window.close();
         }
         window.clear();
-        for (const auto& shape : shapes)
+        for (int i = 0; i < shapes.size(); i++)
         {
-            window.draw(*shape);
+            shapes[i]->draw(window);
         }
         window.display();
     }

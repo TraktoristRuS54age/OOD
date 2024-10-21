@@ -1,10 +1,13 @@
 #pragma once
 #include "Library.h"
 
-class BaseShape : public sf::Shape
+class BaseShape
 {
 public:
-    virtual float GetArea() const = 0;
-    virtual float GetPerimeter() const = 0;
-    virtual ~BaseShape() {}
+    BaseShape(const std::string& name);
+    virtual void draw(sf::RenderWindow& window) const = 0;
+    virtual ~BaseShape() = default;
+    std::string GetName();
+protected:
+    std::string shapeName;
 };

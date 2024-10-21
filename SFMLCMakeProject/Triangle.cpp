@@ -2,42 +2,30 @@
 
 
 Triangle::Triangle(sf::Vector2f point1, sf::Vector2f point2, sf::Vector2f point3)
+    :BaseShape("Triangle")
 {
-    points[0] = point1;
-    points[1] = point2;
-    points[2] = point3;
-    update();
+    shape.setPointCount(3);
+    //std::vector<sf::Vector2f> points;
+    points.push_back(point1);
+    points.push_back(point2);
+    points.push_back(point3);
+    for (int i = 0; i < 3; i++)
+    {
+        shape.setPoint(i, points[i]);
+    }
 }
 
-std::size_t Triangle::getPointCount() const
+sf::Vector2f Triangle::GetPoint(int index)
 {
-    return 3;
+    return shape.getPoint(index);
 }
 
-sf::Vector2f Triangle::getPoint(std::size_t index) const
+void Triangle::draw(sf::RenderWindow& window) const
 {
-    if (index < 3)
-        return sf::Vector2f(points[index]);
-
-    return sf::Vector2f();
-}
-
-float Triangle::GetArea() const
-{
-    float p = GetPerimeter() / 2.0f;
-    return sqrt(p * ((p - abs(points[1].y - points[0].y)) * (p - abs(points[2].x - points[0].x)) * (p - abs(points[1].y - points[2].y))));
-}
-
-float Triangle::GetPerimeter() const
-{
-    float side1 = sqrt(pow(abs(points[1].x - points[0].x), 2) + pow(abs(points[1].y - points[0].y), 2)); // Сторона между points[0] и points[1]
-    float side2 = sqrt(pow(abs(points[2].x - points[1].x), 2) + pow(abs(points[2].y - points[1].y), 2)); // Сторона между points[1] и points[2]
-    float side3 = sqrt(pow(abs(points[2].x - points[0].x), 2) + pow(abs(points[2].y - points[0].y), 2)); // Сторона между points[0] и points[2]
-
-    return side1 + side2 + side3;
+    window.draw(shape);
 }
 
 void Triangle::setFillColor(const sf::Color& color)
 {
-    sf::Shape::setFillColor(color);
+    shape.setFillColor(color);
 }
