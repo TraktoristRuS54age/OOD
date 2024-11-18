@@ -12,6 +12,7 @@ int main()
     ShapeLoader loader("input.txt");
     auto shapes = loader.loadShapes();
 
+    //переделать в класс отрисовку
     sf::RenderWindow window(sf::VideoMode(1000, 600), "Poject by Daniil Cherepov");
     while (window.isOpen())
     {

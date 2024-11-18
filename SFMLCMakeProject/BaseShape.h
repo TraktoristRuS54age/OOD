@@ -11,3 +11,5 @@ public:
 protected:
     std::string shapeName;
 };
+
+//попробовать переменную sf shape
