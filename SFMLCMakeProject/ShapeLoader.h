@@ -5,11 +5,12 @@
 #include "Triangle.h"
 #include "Circle.h"
 #include "Rectangle.h"
+#include "Decorator.h"
 
 class ShapeLoader {
 public:
     ShapeLoader(const std::string& filename);
-    std::vector<std::shared_ptr<BaseShape>> loadShapes();
+    std::vector<std::unique_ptr<Decorator>> loadShapes();
 private:
 	std::string filename;
     std::vector<Point> extractPoints(const std::string& points);

@@ -7,17 +7,12 @@
 class Circle : public BaseShape
 {
 public:
-	explicit Circle(sf::Vector2f point1, float mRadius);
-
-	virtual std::size_t getPointCount() const;
-	virtual sf::Vector2f getPoint(std::size_t index) const;
+	Circle(sf::Vector2f point1, float mRadius);
 
 	float GetRadius() const;
-	float GetArea() const override;
-	float GetPerimeter() const override;
-
+	void draw(sf::RenderWindow& window) const override;
 	void setFillColor(const sf::Color& color);
 private:
 	sf::Vector2f center;
-	float radius;
+	sf::CircleShape shape;
 };
