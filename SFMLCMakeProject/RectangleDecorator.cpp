@@ -2,8 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-RectangleDecorator::RectangleDecorator(std::shared_ptr<Rectangle> rectangle)
-	:Decorator(rectangle)
+RectangleDecorator::RectangleDecorator(std::shared_ptr<BaseDecorator> rectangle)
+	:Decorator(std::dynamic_pointer_cast<BaseDecorator>(rectangle))
 {
 	ComputeArea();
 	ComputePerimeter();

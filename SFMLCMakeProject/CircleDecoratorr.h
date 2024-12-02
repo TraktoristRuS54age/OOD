@@ -5,7 +5,7 @@
 class CircleDecorator : public Decorator 
 {
 public:
-    CircleDecorator(std::shared_ptr<Circle>circle);
+    CircleDecorator(std::shared_ptr<BaseDecorator>circle);
 protected:
     void ComputeArea() override;
     void ComputePerimeter() override;

@@ -4,12 +4,13 @@
 #include "Circle.h"
 #include "Rectangle.h"
 #include "Decorator.h"
+#include "BaseDecorator.h"
 
 class ShapeWriter
 {
 public:
     ShapeWriter(const std::string& filename);
-    void writeShapes(const std::vector<std::unique_ptr<Decorator>>& shapes);
+    void writeShapes(const std::vector<std::shared_ptr<BaseDecorator>>& shapes);
 private:
     std::string filename;
 };

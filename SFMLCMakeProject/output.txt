@@ -1,5 +1,1 @@
-Triangle: P=482; S=14142
-Rectangle: P=180000; S=90000
-Circle: P=628; S=31415
-Circle: P=628; S=31415
 Circle: P=628; S=31415

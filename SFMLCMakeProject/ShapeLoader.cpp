@@ -2,12 +2,13 @@
 #include "TriangleDecorator.h"
 #include "RectangleDecorator.h"
 #include "CircleDecoratorr.h"
+#include "Composite.h"
 
 ShapeLoader::ShapeLoader(const std::string& filename)
     : filename(filename)
 {}
 
-std::vector<std::unique_ptr<Decorator>> ShapeLoader::loadShapes()
+std::vector<std::shared_ptr<BaseDecorator>> ShapeLoader::loadShapes()
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -17,7 +18,7 @@ std::vector<std::unique_ptr<Decorator>> ShapeLoader::loadShapes()
     }
 
     std::string line;
-    std::vector<std::unique_ptr<Decorator>> bodies;
+    std::vector<std::shared_ptr<BaseDecorator>> bodies;
     std::regex shapeRegex(R"((TRIANGLE|RECTANGLE|CIRCLE):\s*((?:P\d=\d+,\d+;\s*)*(?:P\d=\d+,\d+)?(?:C=\d+,\d+;\s*R=\d+)?)?)");
     std::smatch match;
 
@@ -36,7 +37,7 @@ std::vector<std::unique_ptr<Decorator>> ShapeLoader::loadShapes()
                     sf::Vector2f(smallArray[2].x, smallArray[2].y));
                 triangle->setFillColor(sf::Color(255, 0, 0));
 
-                std::unique_ptr<Decorator> shape = std::make_unique<TriangleDecorator>(triangle);
+                std::shared_ptr<BaseDecorator> shape = std::make_shared<TriangleDecorator>(triangle);
                 bodies.push_back(std::move(shape));
             }
             else if (shapeType == "RECTANGLE") {
@@ -45,7 +46,7 @@ std::vector<std::unique_ptr<Decorator>> ShapeLoader::loadShapes()
                     sf::Vector2f(smallArray[1].x, smallArray[1].y));
                 rectangle->setFillColor(sf::Color(255, 117, 20));
 
-                std::unique_ptr<Decorator> shape = std::make_unique<RectangleDecorator>(rectangle);
+                std::shared_ptr<BaseDecorator> shape = std::make_shared<RectangleDecorator>(rectangle);
                 bodies.push_back(std::move(shape));
             }
             else if (shapeType == "CIRCLE") {
@@ -54,7 +55,7 @@ std::vector<std::unique_ptr<Decorator>> ShapeLoader::loadShapes()
                     smallArray[1].x);
                 circle->setFillColor(sf::Color(237, 118, 14));
 
-                std::unique_ptr<Decorator> shape = std::make_unique<CircleDecorator>(circle);
+                std::shared_ptr<BaseDecorator> shape = std::make_shared<CircleDecorator>(circle);
                 bodies.push_back(std::move(shape));
             }
         }
@@ -99,4 +100,125 @@ std::vector<Point> ShapeLoader::extractPoints(const std::string& points) {
         }
     }
     return smallArray;
+}
+
+void ShapeLoader::mainS(std::vector<std::shared_ptr<BaseDecorator>>& shapes)
+{
+    sf::RenderWindow window(sf::VideoMode(1000, 600), "Poject by Daniil Cherepov");
+
+    bool isDragging = false;
+    sf::Vector2f dragStart;
+    sf::Vector2f dragOffset;
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+                    for (auto& shape : shapes)
+                    {
+                        if (shape->Contains(mousePos))
+                        {
+                            if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+                            {
+                                shape->Select();
+                                std::cout << "sel";
+                            }
+                            else
+                            {
+                                for (auto& s : shapes)
+                                {
+                                    s->Deselect();
+                                }
+                                shape->Select();
+                                std::cout << shape->GetName() << " " << shape->IsSelected() << "; ";
+                            }
+                            isDragging = true;
+                            dragStart = mousePos;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (event.type == sf::Event::MouseButtonReleased)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    isDragging = false;
+                }
+            }
+
+            if (event.type == sf::Event::MouseMoved)
+            {
+                if (isDragging)
+                {
+                    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
+                    dragOffset = mousePos - dragStart;
+                    for (auto& shape : shapes)
+                    {
+                        if (shape->IsSelected())
+                        {
+                            shape->Move(dragOffset);
+                            std::cout << "move";
+                        }
+                    }
+                    dragStart = mousePos;
+                }
+            }
+
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::G && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                    auto composite = std::make_shared<Composite>();
+                    for (auto& shape : shapes)
+                    {
+                        if (shape->IsSelected())
+                        {
+                            composite->add(shape);
+                        }
+                    }
+                    shapes.erase(std::remove_if(shapes.begin(), shapes.end(),
+                        [](const std::shared_ptr<BaseDecorator>& shape) { return shape->IsSelected(); }),
+                        shapes.end());
+                    shapes.push_back(composite);
+                }
+
+                if (event.key.code == sf::Keyboard::U && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                    std::vector<std::shared_ptr<BaseDecorator>> newShapes;
+                    for (auto& shape : shapes) {
+                        if (auto composite = std::dynamic_pointer_cast<Composite>(shape)) {
+                            for (auto& s : composite->GetShapes()) {
+                                newShapes.push_back(s);
+                            }
+                        }
+                        else {
+                            newShapes.push_back(shape);
+                        }
+                    }
+                    shapes = newShapes;
+                }
+            }
+        }
+        window.clear();
+        for (int i = 0; i < shapes.size(); i++)
+        {
+            shapes[i]->draw(window);
+            if (shapes[i]->IsSelected()) {
+                if (auto composite = dynamic_cast<const Composite*>(shapes[i].get())) {
+                    composite->DrawSelection(window);
+                }
+                else {
+                    shapes[i]->DrawSelection(window);
+                }
+            }
+        }
+        window.display();
+    }
 }

@@ -1,8 +1,7 @@
 #pragma once
 #include "Library.h"
-#include "BaseDecorator.h"
 
-class BaseShape
+class BaseDecorator
 {
 public:
     virtual void draw(sf::RenderWindow& window) const = 0;
@@ -14,4 +13,7 @@ public:
     virtual void Move(const sf::Vector2f& offset) = 0;
 
     virtual  std::string GetName() const = 0;
+    bool IsSelected() { return m_isSelected; };
+protected:
+    bool m_isSelected = false;
 };

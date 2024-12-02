@@ -1,7 +1,7 @@
 #include "TriangleDecorator.h"
 
-TriangleDecorator::TriangleDecorator(std::shared_ptr<Triangle> triangle)
-	: Decorator(std::dynamic_pointer_cast<BaseShape>(triangle))
+TriangleDecorator::TriangleDecorator(std::shared_ptr<BaseDecorator> triangle)
+	:Decorator(std::dynamic_pointer_cast<BaseDecorator>(triangle))
 {
 	ComputePerimeter();	
 	ComputeArea();

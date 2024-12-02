@@ -4,7 +4,7 @@
 
 class TriangleDecorator : public Decorator {
 public:
-    TriangleDecorator(std::shared_ptr<Triangle>triangle);
+    TriangleDecorator(std::shared_ptr<BaseDecorator>triangle);
 protected:
     void ComputeArea() override;
     void ComputePerimeter() override;

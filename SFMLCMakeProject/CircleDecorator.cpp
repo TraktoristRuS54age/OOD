@@ -2,8 +2,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-CircleDecorator::CircleDecorator(std::shared_ptr<Circle> circle)
-    :Decorator(circle)
+CircleDecorator::CircleDecorator(std::shared_ptr<BaseDecorator> circle)
+    :Decorator(std::dynamic_pointer_cast<BaseDecorator>(circle))
 {
     ComputePerimeter();
     ComputeArea();
