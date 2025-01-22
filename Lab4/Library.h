@@ -1,0 +1,12 @@
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <regex>
+#include <sstream>
+#include <stack>
+#include <unordered_set>
+#include <memory>
