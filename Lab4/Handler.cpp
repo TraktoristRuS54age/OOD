@@ -97,6 +97,7 @@ void Handler::SelectFigures()
 					s->Deselect();
 				}
 				figure->Select();
+				SaveState();
 			}
 		}
 	}
@@ -142,7 +143,6 @@ void Handler::UngroupFigures()
 
 void Handler::Move()
 {
-	SaveState();
 	sf::Vector2i dragOffset;
 	dragOffset = cursorPosition - previousCursorPosition;
 	sf::Vector2f dragOffsetFloat(dragOffset);
